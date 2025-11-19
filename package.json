@@ -1,7 +1,7 @@
 {
   "name": "@pandaa-entertainment/image-optimization",
   "version": "1.0.0",
-  "main": "image-optimizer.js",
+  "main": "./build/src/index.js",
   "types": "./src/types.d.ts",
   "engines": {
     "node": ">=18"

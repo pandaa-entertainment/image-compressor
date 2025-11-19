@@ -44,7 +44,5 @@ export async function compressImage(
     })
     .toBuffer();
 
-  await sharp(optimizedImageBuffer).toFile("optimized-image-separated.webp");
-
   return optimizedImageBuffer;
 }
