@@ -40,11 +40,11 @@ const s3 = getS3Client();
 ### For public key
 
 ```ts
-function optimizePublicImage(props: OptimizeImageOptions): Promise<Buffer> {}
+function optimizePublicImage(props: OptimizeImageOptions): Promise<void> {}
 ```
 
 ### For private key
 
 ```ts
-function optimizePrivateImage(props: OptimizeImageOptions): Promise<Buffer> {}
+function optimizePrivateImage(props: OptimizeImageOptions): Promise<void> {}
 ```
