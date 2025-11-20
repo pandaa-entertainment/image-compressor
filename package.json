@@ -1,6 +1,6 @@
 {
   "name": "@pandaa-entertainment/image-optimization",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "./build/src/index.js",
   "types": "./src/types.d.ts",
   "engines": {
@@ -15,6 +15,10 @@
   "author": "",
   "license": "ISC",
   "description": "Compress and optimize of s3-image using image key",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pandaa-entertainment/image-compressor.git"
+  },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
   },
