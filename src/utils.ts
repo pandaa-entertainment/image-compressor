@@ -69,3 +69,29 @@ export async function getImageUrlFromKey(
     throw new Error("Failed to get signed URL for  image.");
   }
 }
+
+export async function checkOptimizedMetadata(
+  s3: S3Client,
+  bucketName: string,
+  key: string
+): Promise<boolean> {
+  const command = new HeadObjectCommand({
+    Bucket: bucketName,
+    Key: key,
+  });
+  try {
+    const response = await s3.send(command);
+    if (response.Metadata && response.Metadata?.optimized === "true") {
+      return true;
+    }
+    return false;
+  } catch (error: any) {
+    if (
+      error?.$metadata?.httpStatusCode === 404 ||
+      error?.name === "NotFound"
+    ) {
+      return false;
+    }
+    throw error;
+  }
+}

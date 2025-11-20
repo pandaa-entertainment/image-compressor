@@ -1,6 +1,6 @@
 import sharp from "sharp";
-import { getImageUrlFromKey } from "./utils.js";
-import { GetObjectCommand } from "@aws-sdk/client-s3";
+import { checkOptimizedMetadata, getImageUrlFromKey } from "./utils.js";
+import { GetObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import type { OptimizeImageOptions } from "./types.js";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import fetch from "node-fetch";
@@ -21,6 +21,16 @@ const UPLOAD_SIGNED_URL_EXPIRES_IN = 60 * 3; // 5 minutes
 export async function optimizePublicImage(
   props: OptimizeImageOptions
 ): Promise<void> {
+  const isImageAlreadyOptimized = await checkOptimizedMetadata(
+    props.s3,
+    props.bucketName,
+    props.imageKey
+  );
+  if (isImageAlreadyOptimized) {
+    console.log("Image is already optimized. Skipping optimization.");
+    return;
+  }
+
   const s3ImageUrl = await getImageUrlFromKey(props);
 
   if (!s3ImageUrl) {
@@ -47,6 +57,16 @@ export async function optimizePrivateImage(
   props: OptimizeImageOptions
 ): Promise<void> {
   try {
+    const isImageAlreadyOptimized = await checkOptimizedMetadata(
+      props.s3,
+      props.bucketName,
+      props.imageKey
+    );
+    if (isImageAlreadyOptimized) {
+      console.log("Image is already optimized. Skipping optimization.");
+      return;
+    }
+
     const privateImageUrl = await getPrivateImageUrl(props);
 
     if (!privateImageUrl) {
