@@ -66,6 +66,6 @@ export async function getImageUrlFromKey(
     });
     return signedUrl;
   } catch (error) {
-    throw new Error("Failed to get signed URL for private image.");
+    throw new Error("Failed to get signed URL for  image.");
   }
 }

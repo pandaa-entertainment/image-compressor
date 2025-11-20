@@ -5,6 +5,7 @@ import type { OptimizeImageOptions } from "./types.js";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import fetch from "node-fetch";
 import { compressImage } from "./compression.js";
+import { uploadImageInS3 } from "./upload-image-in-s3.js";
 
 declare module "sharp" {
   interface Sharp {
@@ -19,7 +20,7 @@ const UPLOAD_SIGNED_URL_EXPIRES_IN = 60 * 3; // 5 minutes
 
 export async function optimizePublicImage(
   props: OptimizeImageOptions
-): Promise<Buffer> {
+): Promise<void> {
   const s3ImageUrl = await getImageUrlFromKey(props);
 
   if (!s3ImageUrl) {
@@ -34,12 +35,17 @@ export async function optimizePublicImage(
 
   const imageBuffer = Buffer.from(await imageUrl.arrayBuffer());
 
-  return await compressImage(imageBuffer);
+  const compressedImageBuffer = await compressImage(imageBuffer);
+
+  await uploadImageInS3({
+    imageBuffer: compressedImageBuffer,
+    s3Values: props,
+  });
 }
 
 export async function optimizePrivateImage(
   props: OptimizeImageOptions
-): Promise<Buffer> {
+): Promise<void> {
   try {
     const privateImageUrl = await getPrivateImageUrl(props);
 
@@ -55,7 +61,12 @@ export async function optimizePrivateImage(
 
     const imageBuffer = Buffer.from(await imageUrl.arrayBuffer());
 
-    return await compressImage(imageBuffer);
+    const compressedImageBuffer = await compressImage(imageBuffer);
+
+    await uploadImageInS3({
+      imageBuffer: compressedImageBuffer,
+      s3Values: props,
+    });
   } catch (error) {
     throw new Error("Failed to optimize private image.");
   }
