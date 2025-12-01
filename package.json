@@ -1,6 +1,6 @@
 {
   "name": "@pandaa-entertainment/image-optimization",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "main": "./build/src/index.js",
   "types": "./src/types.d.ts",
   "engines": {

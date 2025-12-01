@@ -3,7 +3,7 @@
 #### install the package
 
 ```bash
-npm i optimize-s3-image
+npm i @pandaa-entertainment/image-optimization@latest
 ```
 
 #### import `optimizePublicImage` for image with public key or publicly accessible and import `optimizePrivateImage` for image with private key.
