@@ -1,17 +1,31 @@
 {
   "name": "@pandaa-entertainment/image-optimization",
-  "version": "1.0.6",
-  "main": "./build/src/index.js",
-  "types": "./src/types.d.ts",
+  "version": "1.0.10",
+  "main": "./build/cjs/index.js",
+  "module": "./build/esm/index.js",
+  "types": "./build/esm/index.d.ts",
   "engines": {
     "node": ">=18"
   },
   "scripts": {
-    "build": "npm run build:cjs && npm run build:esm && tsc --outDir build/src && node scripts/build-package.js",
+    "build": "npm run build:cjs && npm run build:esm && tsc --emitDeclarationOnly --outDir build/esm && node scripts/build-package.js",
     "build:cjs": "NODE_ENV=production BABEL_ENV=cjs babel src --presets=./scripts/babel-preset.js --extensions .ts,.tsx --ignore src/**/*.specs.tsx --out-dir build/cjs --source-maps",
     "build:esm": "NODE_ENV=production BABEL_ENV=esm babel src --presets=./scripts/babel-preset.js --extensions .ts,.tsx --ignore src/**/*.specs.tsx --out-dir build/esm --source-maps"
   },
-  "keywords": [],
+  "keywords": [
+    "image",
+    "image-optimization",
+    "image-compression",
+    "image-processing",
+    "image-compressor",
+    "sharp",
+    "aws-s3",
+    "s3",
+    "optimize",
+    "compress",
+    "nodejs",
+    "image-upload"
+  ],
   "author": "",
   "license": "ISC",
   "description": "Compress and optimize of s3-image using image key",
@@ -20,16 +34,18 @@
     "url": "git+https://github.com/pandaa-entertainment/image-compressor.git"
   },
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
+    "registry": "https://registry.npmjs.org/"
   },
   "files": [
-    "build",
-    "src"
+    "build/cjs",
+    "build/esm",
+    "readme.md"
   ],
   "exports": {
     ".": {
-      "import": "./src/index.js",
-      "require": "./src/index.js"
+      "import": "./build/esm/index.js",
+      "require": "./build/cjs/index.js",
+      "types": "./build/esm/index.d.ts"
     }
   },
   "dependencies": {

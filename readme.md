@@ -1,50 +1,131 @@
-## How to use this package
+# 📦 @pandaa-entertainment/image-optimization
 
-#### install the package
+Efficient image compression & optimization for AWS S3 using **Sharp**.
+Designed for **Node.js**, **serverless environments (AWS Lambda)**, and high-performance image workflows.
+
+---
+
+## 🚀 Features
+
+- ⚡ **Compress large images while preserving quality**
+- ☁️ **Directly fetch and upload images to Amazon S3**
+- 🛠 **Supports JPEG, PNG, WEBP**
+- 🔄 **Buffer-based (no temporary file leaks)**
+- 🧩 **ESM + CJS support**
+
+---
+
+## 📥 Installation
+
+Using npm:
 
 ```bash
-npm i @pandaa-entertainment/image-optimization@latest
+npm install @pandaa-entertainment/image-optimization
 ```
 
-#### import `optimizePublicImage` for image with public key or publicly accessible and import `optimizePrivateImage` for image with private key.
+Or using yarn:
 
-#### types
+```bash
+yarn add @pandaa-entertainment/image-optimization
+```
+
+---
+
+## ✨ Quick Usage Example
 
 ```ts
-interface OptimizeImageOptions {
-  imageKey: string;
-  bucketName: string;
-  s3: S3Client;
+import { optimizeImage } from "@pandaa-entertainment/image-optimization";
+import { S3Client } from "@aws-sdk/client-s3";
+
+const s3 = new S3Client({ region: "us-east-1" });
+
+async function run() {
+  const result = await optimizeImage({
+    s3,
+    bucketName: "my-bucket",
+    imageKey: "images/my-large-image.jpg",
+  });
+
+  console.log("Optimization result:", result);
 }
+
+run().catch(console.error);
 ```
 
-### create S3Client like below or any your way and pass to the props in optimizier functions
+---
+
+## 🔧 Options
+
+| Option       | Type     | Required | Description                       |
+| ------------ | -------- | -------- | --------------------------------- |
+| `s3`         | S3Client | ✔        | AWS S3 Client instance            |
+| `bucketName` | string   | ✔        | Bucket name where the image lives |
+| `imageKey`   | string   | ✔        | Key/path of the image in S3       |
+
+---
+
+## 🧩 API Exports
 
 ```ts
-export const getS3Client = () => {
-  let s3Client = null;
-  if (!s3Client) {
-    s3Client = new S3Client({
-      credentials: {
-        accessKeyId: process.env.accessKeyId,
-        secretAccessKey: process.env.secretAccessKey,
-      },
-      region: process.env.region,
-    });
-  }
-  return s3Client;
+import {
+  optimizeImage,
+  uploadImageToS3,
+} from "@pandaa-entertainment/image-optimization";
+```
+
+- `optimizeImage()` → Downloads → Compresses → Reuploads
+- `uploadImageToS3()` → Uploads compressed buffer directly
+
+---
+
+## 📊 Format Behavior
+
+| Format | Compression | Notes              |
+| ------ | ----------- | ------------------ |
+| JPEG   | ✔ ✔         | Lossy optimization |
+| PNG    | ✔ ✔         | Lossless supported |
+| WEBP   | 🔥          | Efficient for web  |
+
+---
+
+## 📦 Requirements
+
+| Tool       | Version  |
+| ---------- | -------- |
+| Node.js    | >=18     |
+| AWS SDK v3 | Included |
+
+---
+
+## 🛠 Example AWS Lambda Integration
+
+```ts
+import { S3Client } from "@aws-sdk/client-s3";
+import { optimizeImage } from "@pandaa-entertainment/image-optimization";
+
+export const handler = async (event) => {
+  const { bucket, object } = event.Records[0].s3;
+
+  await optimizeImage({
+    s3: new S3Client(),
+    bucketName: bucket.name,
+    imageKey: object.key,
+  });
+
+  return { status: "optimized" };
 };
-const s3 = getS3Client();
 ```
 
-### For public key
+---
 
-```ts
-function optimizePublicImage(props: OptimizeImageOptions): Promise<void> {}
+## 📄 License
+
+MIT © Pandaa Entertainment
+
+---
+
+## 🔑 Keywords (SEO)
+
 ```
-
-### For private key
-
-```ts
-function optimizePrivateImage(props: OptimizeImageOptions): Promise<void> {}
+image, image-optimization, s3, sharp, compress, upload, optimize, image-compress
 ```
