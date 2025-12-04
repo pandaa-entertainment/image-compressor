@@ -1,6 +1,6 @@
 import sharp from "sharp";
 import { checkOptimizedMetadata, getImageUrlFromKey } from "./utils.js";
-import { GetObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import { GetObjectCommand } from "@aws-sdk/client-s3";
 import type { OptimizeImageOptions } from "./types.js";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import fetch from "node-fetch";
@@ -16,7 +16,7 @@ declare module "sharp" {
 sharp.cache(false);
 sharp.prototype.limitInputPixels = Number.MAX_SAFE_INTEGER;
 
-const UPLOAD_SIGNED_URL_EXPIRES_IN = 60 * 3; // 5 minutes
+const UPLOAD_SIGNED_URL_EXPIRES_IN = 60 * 3; // 3 minutes
 
 export async function optimizePublicImage(
   props: OptimizeImageOptions
@@ -45,7 +45,12 @@ export async function optimizePublicImage(
 
   const imageBuffer = Buffer.from(await imageUrl.arrayBuffer());
 
-  const compressedImageBuffer = await compressImage(imageBuffer);
+  const compressedImageBuffer = await compressImage({
+    imageBuffer,
+    maxWidth: props?.width,
+    maxHeight: props?.height,
+    quality: props?.quality,
+  });
 
   await uploadImageInS3({
     imageBuffer: compressedImageBuffer,
@@ -81,7 +86,12 @@ export async function optimizePrivateImage(
 
     const imageBuffer = Buffer.from(await imageUrl.arrayBuffer());
 
-    const compressedImageBuffer = await compressImage(imageBuffer);
+    const compressedImageBuffer = await compressImage({
+      imageBuffer,
+      maxWidth: props.width,
+      maxHeight: props.height,
+      quality: props.quality,
+    });
 
     await uploadImageInS3({
       imageBuffer: compressedImageBuffer,

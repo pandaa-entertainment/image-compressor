@@ -1,11 +1,10 @@
 import sharp from "sharp";
+import { CompressImageInterface } from "./types";
 
 export async function compressImage(
-  imageBuffer: Buffer,
-  maxWidth = 2560,
-  maxHeight = 1440
+  props: CompressImageInterface
 ): Promise<Buffer> {
-  const image = sharp(imageBuffer, {
+  const image = sharp(props.imageBuffer, {
     limitInputPixels: Number.MAX_SAFE_INTEGER,
   });
 
@@ -15,22 +14,27 @@ export async function compressImage(
   const height = metadata.height!;
   const aspectRatio = width / height;
 
+  const compressedMaxWidth = Number(props?.maxWidth) || 2560;
+  const compressedMaxHeight = Number(props?.maxHeight) || 1440;
+  const compressedQuality = Number(props?.quality) || 70;
+
   let finalWidth = width;
   let finalHeight = height;
 
-  const resizeNeeded = width > maxWidth || height > maxHeight;
+  const resizeNeeded =
+    width > compressedMaxWidth || height > compressedMaxHeight;
 
   if (resizeNeeded) {
     if (width > height) {
-      finalWidth = maxWidth;
+      finalWidth = compressedMaxWidth;
       finalHeight = Math.round(finalWidth / aspectRatio);
     } else {
-      finalHeight = maxHeight;
+      finalHeight = compressedMaxHeight;
       finalWidth = Math.round(finalHeight * aspectRatio);
     }
   }
 
-  const optimizedImageBuffer = await sharp(imageBuffer, {
+  const optimizedImageBuffer = await sharp(props.imageBuffer, {
     limitInputPixels: Number.MAX_SAFE_INTEGER,
   })
     .resize({
@@ -39,7 +43,7 @@ export async function compressImage(
       withoutEnlargement: true,
     })
     .webp({
-      quality: 70,
+      quality: compressedQuality,
       effort: 3,
     })
     .toBuffer();

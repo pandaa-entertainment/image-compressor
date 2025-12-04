@@ -34,16 +34,25 @@ yarn add @pandaa-entertainment/image-optimization
 ## ✨ Quick Usage Example
 
 ```ts
-import { optimizeImage } from "@pandaa-entertainment/image-optimization";
+import { optimizePublicImage } from "@pandaa-entertainment/image-optimization";
 import { S3Client } from "@aws-sdk/client-s3";
 
-const s3 = new S3Client({ region: "us-east-1" });
+const s3 = new S3Client({
+  region: process.env.region,
+  credentials: {
+    accessKeyId: process.env.accessKeyId,
+    secretAccessKey: process.env.SecretAccessKey,
+  },
+});
 
 async function run() {
-  const result = await optimizeImage({
+  const result = await optimizePublicImage({
     s3,
     bucketName: "my-bucket",
-    imageKey: "images/my-large-image.jpg",
+    imageKey: "public/my-large-image.jpg",
+    width: 2560, // optional
+    height: 2560, // optional
+    quality: 70, // optional
   });
 
   console.log("Optimization result:", result);
@@ -68,13 +77,10 @@ run().catch(console.error);
 
 ```ts
 import {
-  optimizeImage,
-  uploadImageToS3,
+  optimizePublicImage,
+  optimizePrivateImage,
 } from "@pandaa-entertainment/image-optimization";
 ```
-
-- `optimizeImage()` → Downloads → Compresses → Reuploads
-- `uploadImageToS3()` → Uploads compressed buffer directly
 
 ---
 
@@ -101,15 +107,18 @@ import {
 
 ```ts
 import { S3Client } from "@aws-sdk/client-s3";
-import { optimizeImage } from "@pandaa-entertainment/image-optimization";
+import { optimizePublicImage } from "@pandaa-entertainment/image-optimization";
 
 export const handler = async (event) => {
   const { bucket, object } = event.Records[0].s3;
 
-  await optimizeImage({
+  await optimizePublicImage({
     s3: new S3Client(),
     bucketName: bucket.name,
     imageKey: object.key,
+    width: 2560, // optional
+    height: 2560, // optional
+    quality: 70, // optional
   });
 
   return { status: "optimized" };

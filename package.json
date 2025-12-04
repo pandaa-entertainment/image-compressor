@@ -34,7 +34,8 @@
     "url": "git+https://github.com/pandaa-entertainment/image-compressor.git"
   },
   "publishConfig": {
-    "registry": "https://registry.npmjs.org/"
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
   },
   "files": [
     "build/cjs",
