@@ -1,6 +1,6 @@
 {
   "name": "@pandaa-entertainment/image-optimization",
-  "version": "1.0.10",
+  "version": "1.1.10",
   "main": "./build/cjs/index.js",
   "module": "./build/esm/index.js",
   "types": "./build/esm/index.d.ts",
