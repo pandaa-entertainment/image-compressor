@@ -1,6 +1,6 @@
 {
   "name": "@pandaa-entertainment/image-optimization",
-  "version": "1.0.10",
+  "version": "1.1.10",
   "main": "./build/cjs/index.js",
   "module": "./build/esm/index.js",
   "types": "./build/esm/index.d.ts",
@@ -34,7 +34,8 @@
     "url": "git+https://github.com/pandaa-entertainment/image-compressor.git"
   },
   "publishConfig": {
-    "registry": "https://registry.npmjs.org/"
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
   },
   "files": [
     "build/cjs",
